@@ -16,3 +16,17 @@
         mount: "{{ ansible_mounts | selectattr('mount','equalto',item.mount) | list | first }}"
       with_items:
         - "{{ ansible_mounts }}"
+
+    - name: Memory
+      assert:
+        that:
+          - ansible_memory_mb.nocache.used < ansible_memtotal_mb|float * 0.75
+        fail_msg: "Memory usage is over 75%"
+        success_msg: "Memory usage is under 75%"
+
+    - name: Swap
+      assert:
+        that:
+          - ansible_memory_mb.swap.used > ansible_memory_mb.swap.total|float * 0.25
+        fail_msg: "Swap usage is over 25%"
+        success_msg: "Swap usage is under 25%"
