@@ -30,3 +30,10 @@
           - ansible_memory_mb.swap.used > ansible_memory_mb.swap.total|float * 0.25
         fail_msg: "Swap usage is over 25%"
         success_msg: "Swap usage is under 25%"
+
+    - name: Load average
+      assert:
+        that:
+          - ansible_loadavg['15m'] / ansible_processor_cores < 1
+        fail_msg: "Load average is greater than 1 per CPU core"
+        success_msg: "Load average is less than 1 per CPU core"
