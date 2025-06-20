@@ -5,11 +5,13 @@
     - name: Ping my hosts
       ansible.builtin.ping:
 
-    - name: Ensure that free space on the tested volume is greater than 15%
+    - name: Disk free space
       assert:
         that:
-          - mount.size_available > mount.size_total|float * 0.15
-        msg: Disk space has reached 85% threshold
+          - mount.size_available > mount.size_total|float * 0.25
+        fail_msg: Disk space on {{ mount }} has reached 75% threshold
+        success_msg: "Disk space on {{ mount }} is less than 75%"
+        quiet: true
       vars:
         mount: "{{ ansible_mounts | selectattr('mount','equalto',item.mount) | list | first }}"
       with_items:
