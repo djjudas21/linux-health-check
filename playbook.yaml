@@ -5,6 +5,13 @@
     - name: Ping my hosts
       ansible.builtin.ping:
 
+    - name: Linux platform
+      assert:
+        that:
+          - ansible_system == "Linux"
+        fail_msg: "This playbook only supports Linux systems"
+        success_msg: "This is a Linux system"
+
     - name: Disk free space
       assert:
         that:
