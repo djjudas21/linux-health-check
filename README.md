@@ -30,3 +30,8 @@ With the local Ansible set up on the bastion, you can execute the playbook like 
 ```
 ansible-playbook -i inventory-localhost.ini playbook.yaml
 ```
+
+Note that the default behaviour of Ansible means that hitting a failure in any task means the run
+is halted. To work around this, this playbook makes use of `ignore_errors: true` so it can continue
+running. This means that you must investigate any tests that are marked **ignored** at the end of
+the run.
