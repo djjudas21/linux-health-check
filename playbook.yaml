@@ -60,3 +60,34 @@
         fail_msg: Zombie check failed, {{ command_result.stdout }} zombie processes
         success_msg: Zombie processes check passed
       ignore_errors: true
+
+    - name: Get firewalld status
+      ansible.builtin.systemd:
+        name: "firewalld"
+      register: firewalld
+
+    - name: Get ufw status
+      ansible.builtin.systemd:
+        name: "ufw"
+      register: ufw
+
+    - name: Get iptables status
+      ansible.builtin.systemd:
+        name: "iptables"
+      register: iptables
+
+    - name: Check Red Hat firewall running
+      when: ansible_os_family == "RedHat"
+      assert:
+        that: (firewalld.status.SubState == 'running') or (iptables.status.SubState == 'running')
+        fail_msg: Firewall is not running
+        success_msg: Firewall is running
+      ignore_errors: true
+
+    - name: Check Debian firewall running
+      when: ansible_os_family == "Debian"
+      assert:
+        that: (iptables.status.SubState == 'running') or (ufw.status.SubState == 'running')
+        fail_msg: Firewall is not running
+        success_msg: Firewall is running
+      ignore_errors: true
