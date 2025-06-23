@@ -41,3 +41,15 @@
         fail_msg: "Load average is greater than 1 per CPU core"
         success_msg: "Load average is less than 1 per CPU core"
       ignore_errors: true
+
+    - name: List zombie processes
+      ansible.builtin.shell: top -b1 -n1 | grep Z | wc -l
+      register: command_result
+      changed_when: false
+    - name: Count zombie processes
+      assert:
+        that:
+          command_result.stdout|int == 0
+        fail_msg: Zombie check failed, {{ command_result.stdout }} zombie processes
+        success_msg: Zombie processes check passed
+      ignore_errors: true
