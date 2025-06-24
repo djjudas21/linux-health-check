@@ -127,3 +127,14 @@
         fail_msg: "{{ dnf_updates.stdout }} outstanding updates"
         success_msg: No outstanding updates
       ignore_errors: true
+
+    - name: SMART disk health
+      when: ansible_virtualization_role == "host"
+      ansible.builtin.shell: "smartctl -H /dev/{{ device }}"
+      become: true
+      vars:
+        device: "{{ ansible_devices.keys() | list | first }}"
+      with_items:
+        - "{{ ansible_devices }}"
+      ignore_errors: true
+      changed_when: false
