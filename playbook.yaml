@@ -172,3 +172,18 @@
       ignore_errors: true
       failed_when: false
       changed_when: false
+
+    - name: Get iowait
+      ansible.builtin.shell: top -b1 -n1 -1 | grep '%Cpu' | cut -d ' ' -f 14
+      register: iowait
+      ignore_errors: true
+      changed_when: false
+
+    - name: Check iowait
+      assert:
+        that: iowait.stdout|float < 10
+        fail_msg: iowait is {{ iowait.stdout }}
+        success_msg: iowait is not excessive
+
+    - name: Secrets in environment
+      assert
