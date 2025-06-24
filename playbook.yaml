@@ -12,6 +12,10 @@
         fail_msg: "This playbook only supports Linux systems"
         success_msg: "This is a Linux system"
 
+    - name: OS information
+      debug:
+        msg: "{{ ansible_distribution }} {{ ansible_distribution_version }}"
+
     - name: Disk free space
       assert:
         that:
