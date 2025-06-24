@@ -194,3 +194,16 @@
         fail_msg: Environment variable {{ item }} may contain a secret
       with_items: "{{ ansible_env.keys() }}"
       ignore_errors: true
+
+    - name: Get systemd failed units
+      ansible.builtin.shell: systemctl list-units --failed -q | wc -l
+      register: failed_units
+      ignore_errors: true
+      changed_when: false
+
+    - name: Check systemd failed units
+      assert:
+        that: failed_units|int == 0
+        fail_msg: "{{ failed_units }} failed systemd units"
+        success_msg: No failed systemd units
+      ignore_errors: true
