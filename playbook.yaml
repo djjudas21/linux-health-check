@@ -95,3 +95,35 @@
         fail_msg: Firewall is not running
         success_msg: Firewall is running
       ignore_errors: true
+
+    - name: Check for dnf updates
+      ansible.builtin.shell: "dnf check-update --quiet | wc -l"
+      register: dnf_updates
+      when: ansible_os_family == "RedHat"
+      changed_when: false
+      ignore_errors: true
+
+    - name: Count dnf updates
+      when: ansible_os_family == "RedHat"
+      assert:
+        that:
+          dnf_updates.stdout|int == 0
+        fail_msg: "{{ dnf_updates.stdout }} outstanding updates"
+        success_msg: No outstanding updates
+      ignore_errors: true
+
+    - name: Check for apt updates
+      ansible.builtin.shell: "apt list --upgradable --quiet | wc -l"
+      register: apt_updates
+      when: ansible_pkg_mgr == "apt"
+      changed_when: false
+      ignore_errors: true
+
+    - name: Count apt updates
+      when: ansible_pkg_mgr == "apt"
+      assert:
+        that:
+          apt_updates.stdout|int == 0
+        fail_msg: "{{ dnf_updates.stdout }} outstanding updates"
+        success_msg: No outstanding updates
+      ignore_errors: true
