@@ -186,4 +186,11 @@
         success_msg: iowait is not excessive
 
     - name: Secrets in environment
-      assert
+      assert:
+        that:
+          - "'SECRET' not in item"
+          - "'PASS' not in item"
+          - "'TOKEN' not in item"
+        fail_msg: Environment variable {{ item }} may contain a secret
+      with_items: "{{ ansible_env.keys() }}"
+      ignore_errors: true
