@@ -96,6 +96,34 @@
         success_msg: Firewall is running
       ignore_errors: true
 
+    - name: Get cron status
+      ansible.builtin.systemd:
+        name: "cron"
+      register: cron
+      when: ansible_os_family == "Debian"
+
+    - name: Check crond status
+      when: ansible_os_family == "RedHat"
+      assert:
+        that: crond.status.SubState == 'running'
+        fail_msg: crond is not running
+        success_msg: crond is running
+      ignore_errors: true
+
+    - name: Get crond status
+      ansible.builtin.systemd:
+        name: "crond"
+      register: crond
+      when: ansible_os_family == "RedHat"
+
+    - name: Check cron status
+      when: ansible_os_family == "Debian"
+      assert:
+        that: cron.status.SubState == 'running'
+        fail_msg: cron is not running
+        success_msg: cron is running
+      ignore_errors: true
+
     - name: Check for dnf updates
       ansible.builtin.shell: "dnf check-update --quiet | wc -l"
       register: dnf_updates
