@@ -192,6 +192,7 @@
           - "'PASS' not in item"
           - "'TOKEN' not in item"
         fail_msg: Environment variable {{ item }} may contain a secret
+        quiet: true
       with_items: "{{ ansible_env.keys() }}"
       ignore_errors: true
 
