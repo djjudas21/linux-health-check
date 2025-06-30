@@ -1,0 +1,28 @@
+---
+- name: Install Linux Health Check dependencies
+  hosts: all
+  tasks:
+    - name: Install dependencies on Red Hat
+      become: true
+      ansible.builtin.package:
+        name:
+        - sysstat
+        - smartmontools
+        - lshw
+        - iftop
+        - policycoreutils-python-utils
+        - dnf-utils
+        state: present
+      when: ansible_os_family == "RedHat"
+    - name: Install dependencies on Ubuntu
+      become: true
+      ansible.builtin.package:
+        name:
+        - sysstat
+        - smartmontools
+        - lshw
+        - iftop
+        state: present
+      when: ansible_os_family == "Debian"
+
+
